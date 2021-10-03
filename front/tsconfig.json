@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "esModuleInterop": true,      // import * as React from 'react'; 원래는 왼쪽으로 가져와야 하지만 true로 하면 // import React from 'react';
+      "sourceMap": true,            // error 발생 시 원래 위치로 찾아가기 좋음.
+      "lib": ["ES2020", "DOM"],     // library 는 최신 es2020과 dom
+      "jsx": "react",               
+      "module": "esnext",           // module은 최신 모듈 쓰겠다는 것. (import export 등)
+      "moduleResolution": "Node",
+      "target": "es5",
+      "strict": true,               // typescript 의 type에 대해서 더 strict 하게 잡아주도록 true로 설정.
+      "resolveJsonModule": true,
+      "baseUrl": ".",
+      "paths": {                    // 편하게 import 할 수 있게 해줌. // import A from '../..' 이런거 말고 import A from @hooks/sdf.js 이런식으로 쓸 수 있음
+        "@hooks/*": ["hooks/*"],
+        "@components/*": ["components/*"],
+        "@layouts/*": ["layouts/*"],
+        "@pages/*": ["pages/*"],
+        "@utils/*": ["utils/*"],
+        "@typings/*": ["typings/*"]
+      }
+    }
+  }
