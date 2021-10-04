@@ -2,16 +2,16 @@ import path from 'path';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import webpack, { Configuration as WebpackConfiguration } from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
-const isDevelopment = process.env.NODE_ENV !== 'production'; //
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const config: Configuration = {
-  name: 'bulletin',
+  name: 'sleact',
   mode: isDevelopment ? 'development' : 'production',
   devtool: !isDevelopment ? 'hidden-source-map' : 'inline-source-map',
   resolve: {
@@ -39,7 +39,7 @@ const config: Configuration = {
             [
               '@babel/preset-env',
               {
-                targets: { browsers: ['IE 10', 'last 2 chrome versions'] },
+                targets: { browsers: ['IE 10'] },
                 debug: isDevelopment,
               },
             ],
@@ -49,15 +49,14 @@ const config: Configuration = {
           env: {
             development: {
               plugins: [
-                ['@emotion/babel-plugin', { sourceMap: true }],
+                // ['@emotion/babel-plugin', { sourceMap: true }],
                 require.resolve('react-refresh/babel'),
               ],
             },
             production: {
-              plugins: ['@emotion/babel-plugin'],
+              // plugins: ['@emotion/babel-plugin'],
             },
           },
-          exclude: path.join(__dirname, 'node_modules'),
         },
       },
       {
@@ -106,13 +105,13 @@ if (isDevelopment && config.plugins) {
       },
     }),
   );
-  config.plugins.push(
-    new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: false }),
-  );
+  // config.plugins.push(
+  //   new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: false }),
+  // );
 }
 if (!isDevelopment && config.plugins) {
   config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
+  // config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
 }
 
 export default config;
