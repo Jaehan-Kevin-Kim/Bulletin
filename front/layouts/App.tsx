@@ -1,6 +1,6 @@
 import React from 'react'
-import loadable from '@loadable/component';
 import { Switch, Route, Redirect } from 'react-router-dom'
+import loadable from '@loadable/component';
 const LogIn = loadable(() => import('@pages/LogIn'));
 const SignUp = loadable(() => import('@pages/SignUp'));
 

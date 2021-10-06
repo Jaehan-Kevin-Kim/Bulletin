@@ -1,20 +1,17 @@
+import useInput from '@hooks/useInput';
 import React, { FC, useCallback, useState, VFC } from 'react'
+import axios from 'axios'
 import { Container, Header, Form, Error, Success, Label, Input, LinkContainer, Button } from './styles';
+import { Link } from 'react-router-dom';
 
 const SignUp: FC = () => {
-    const [email, setEmail] = useState('');
-    const [nickname, setNickname] = useState('');
+    const [email, onChangeEmail, setEmail] = useInput('');
+    const [nickname, onChangeNickname, setNickname] = useInput('');
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
     const [misMatchError, setMisMatchError] = useState(false);
-
-    const onChangeEmail = useCallback((e) => {
-        setEmail(e.target.value)
-    }, [email]);
-
-    const onChangeNickname = useCallback((e) => {
-        setNickname(e.target.value);
-    }, [nickname]);
+    const [signUpError, setSignUpError] = useState('');
+    const [signUpSuccess, setSignUpSuccess] = useState(false);
 
     const onChangePassword = useCallback((e) => {
         setPassword(e.target.value)
@@ -31,6 +28,19 @@ const SignUp: FC = () => {
         console.log(email, nickname, password, passwordCheck)
         if (!misMatchError && nickname) {
             console.log('Send Sign Up Request to the Server');
+
+            setSignUpSuccess(false);
+            setSignUpError('');
+            axios.post('/api/users', { email, nickname, password })
+                .then((response) => {
+                    console.log(response)
+                    setSignUpSuccess(true)
+                })
+                .catch((error) => {
+                    console.log(error.response)
+                    setSignUpError(error.response.data);
+                })
+                .finally(() => { })
         }
     }, [email, nickname, password, passwordCheck])
 
@@ -70,14 +80,14 @@ const SignUp: FC = () => {
                     </div>
                     {misMatchError && <Error>Password is not matched!</Error>}
                     {!nickname && <Error>Please insert a nickname.</Error>}
-                    {/* {signUpError && <Error>The email address is already registered.</Error>}
-                    {signUpSuccess && <Success>Success! Please Log In.</Success>} */}
+                    {signUpError && <Error>{signUpError}</Error>}
+                    {signUpSuccess && <Success>Success! Please Log In.</Success>}
                 </Label>
                 <Button type="submit">Sign Up</Button>
             </Form>
             <LinkContainer>
                 Are you already a member??&nbsp;
-                <a href="/login">Go to Log In</a>
+                <Link to="/login">Go to Log In</Link>
             </LinkContainer>
         </Container>
         // </div>

@@ -3,10 +3,10 @@ import React from 'react'
 const LogIn = () => {
     return (
         <div>
-           
-        <h1>why?</h1>
-        <div>LogIn Page</div>
-     
+
+            <h1>why?</h1>
+            <div>LogIn Page</div>
+
         </div>
     )
 }
