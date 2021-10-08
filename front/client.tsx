@@ -1,11 +1,21 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom';
+import { SWRConfig } from "swr";
+import SWRDevtools, { Cache } from "@jjordy/swr-devtools";
+// import { cache, mutate } from 'swr';
+
+
 import App from '@layouts/App'
 
 render(
     <BrowserRouter>
-        <App />
+        <SWRConfig value={{ provider: () => new Cache() }} >
+            <App />
+            <SWRDevtools />
+        </SWRConfig>
+        {/* <SWRDevtools cache={cache} mutate={mutate} /> */}
+
     </BrowserRouter>,
     document.querySelector('#app'));
 

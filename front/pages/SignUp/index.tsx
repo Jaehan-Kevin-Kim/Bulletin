@@ -31,7 +31,7 @@ const SignUp: FC = () => {
 
             setSignUpSuccess(false);
             setSignUpError('');
-            axios.post('/api/users', { email, nickname, password })
+            axios.post('http://localhost:3095/api/users', { email, nickname, password })
                 .then((response) => {
                     console.log(response)
                     setSignUpSuccess(true)
