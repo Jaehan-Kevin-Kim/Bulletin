@@ -3,7 +3,10 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import gravatar from 'gravatar'
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, Switch, Route } from 'react-router-dom';
+import loadable from '@loadable/component';
+const Channel = loadable(() => import('@pages/Channel'));
+const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 import { Header, RightMenu, ProfileImg, WorkspaceWrapper, Workspaces, Channels, WorkspaceName, Chats, MenuScroll } from './styles';
 
 interface DataPaylaod<T> {
@@ -53,9 +56,13 @@ const Workspace = ({ children }) => {
                         MenuScroll
                     </MenuScroll>
                 </Channels>
-                <Chats>Chats</Chats>
+                <Chats>
+                    <Switch>
+                        <Route path='/workspace/channel' component={Channel} />
+                        <Route path='/workspace/dm' component={DirectMessage} />
+                    </Switch>
+                </Chats>
             </WorkspaceWrapper>
-            {children}
         </div>
     )
 }
