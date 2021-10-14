@@ -1,11 +1,12 @@
+import { Container } from '@pages/Channel/styles'
 import React from 'react'
+import { Header } from './styles';
 
 const Channel = () => {
-
     return (
-        <div>
-            Welcome to Channel.
-        </div>
+        <Container>
+            <Header> Channel</Header>
+        </Container>
     )
 }
 
