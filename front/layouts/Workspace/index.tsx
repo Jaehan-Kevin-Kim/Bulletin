@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, VFC } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
@@ -8,12 +8,13 @@ import { toast } from 'react-toastify'
 import loadable from '@loadable/component';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
-import { Header, RightMenu, ProfileImg, WorkspaceWrapper, Workspaces, Channels, WorkspaceName, Chats, MenuScroll, ProfileModal, LogOutButton, WorkspaceButton, AddButton } from './styles';
+import { Header, RightMenu, ProfileImg, WorkspaceWrapper, Workspaces, Channels, WorkspaceName, Chats, MenuScroll, ProfileModal, LogOutButton, WorkspaceButton, AddButton, WorkspaceModal } from './styles';
 import Menu from '@components/Menu';
 import { IUser } from '@typings/db';
 import { Button, Input, Label } from '@pages/SignUp/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
+import CreateChannelModal from '@components/CreateChannelModal';
 
 
 interface DataPaylaod<T> {
@@ -26,10 +27,12 @@ interface DataResponse<T> {
     isError: any;
 }
 
-const Workspace = ({ children }) => {
+const Workspace: VFC = () => {
     const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+    const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+    const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
     const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('')
     const [newUrl, onChangeNewUrl, setNewUrl] = useInput('')
 
@@ -87,6 +90,7 @@ const Workspace = ({ children }) => {
     const onCloseModal = useCallback(
         () => {
             setShowCreateWorkspaceModal(false);
+            setShowCreateChannelModal(false);
         },
         [],
     )
@@ -101,6 +105,20 @@ const Workspace = ({ children }) => {
     const onChangeNameUrl = useCallback(
         () => {
 
+        },
+        [],
+    )
+
+    const toggleWorkspaceModal = useCallback(
+        () => {
+            setShowWorkspaceModal((prev) => !prev);
+        },
+        [],
+    )
+
+    const onClickAddChannel = useCallback(
+        () => {
+            setShowCreateChannelModal(true);
         },
         [],
     )
@@ -129,7 +147,6 @@ const Workspace = ({ children }) => {
                                 </ProfileModal>
                                 <LogOutButton onClick={onLogout}>Logout</LogOutButton>
                             </Menu>)}
-
                     </span>
                 </RightMenu>
             </Header>
@@ -145,9 +162,17 @@ const Workspace = ({ children }) => {
                     <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
                 </Workspaces>
                 <Channels>
-                    <WorkspaceName>Bulletin</WorkspaceName>
+                    <WorkspaceName onClick={toggleWorkspaceModal}>Bulletin</WorkspaceName>
                     <MenuScroll>
-                        MenuScroll
+                        <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
+                            <WorkspaceModal>
+                                <h2>Bulletin</h2>
+                                {/* <h2>{userData?.Workspaces.find((v) => v.url === workspace)?.name}</h2> */}
+                                {/* <button onClick={onClickInviteWorkspace}>Add a user for the workspace</button>*/}
+                                <button onClick={onClickAddChannel}>Create Channel</button>
+                                <button onClick={onLogout}>Logout</button>
+                            </WorkspaceModal>
+                        </Menu>
                     </MenuScroll>
                 </Channels>
                 <Chats>
@@ -171,6 +196,9 @@ const Workspace = ({ children }) => {
                     <Button type="submit">Create</Button>
                 </form>
             </Modal>
+            <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}
+            // setShowCreateChannelModal={setShowCreateChannelModal} 
+            />
         </div >
     )
 }
