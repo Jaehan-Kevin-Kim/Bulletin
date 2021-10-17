@@ -5,12 +5,13 @@ import axios from 'axios';
 import gravatar from 'gravatar'
 import { Redirect, Link, Switch, Route } from 'react-router-dom';
 import { toast } from 'react-toastify'
+import { useParams } from 'react-router';
 import loadable from '@loadable/component';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 import { Header, RightMenu, ProfileImg, WorkspaceWrapper, Workspaces, Channels, WorkspaceName, Chats, MenuScroll, ProfileModal, LogOutButton, WorkspaceButton, AddButton, WorkspaceModal } from './styles';
 import Menu from '@components/Menu';
-import { IUser } from '@typings/db';
+import { IChannel, IUser } from '@typings/db';
 import { Button, Input, Label } from '@pages/SignUp/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
@@ -28,13 +29,17 @@ interface DataResponse<T> {
 }
 
 const Workspace: VFC = () => {
-    const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
     const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
     const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
     const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('')
     const [newUrl, onChangeNewUrl, setNewUrl] = useInput('')
+
+    const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+
+    const { workspace } = useParams<{ workspace: string }>();
+    const { data: channelData } = useSWR<IChannel[]>(userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null, fetcher)
 
     const onLogout = useCallback(() => {
         axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true })
@@ -173,12 +178,13 @@ const Workspace: VFC = () => {
                                 <button onClick={onLogout}>Logout</button>
                             </WorkspaceModal>
                         </Menu>
+                        {channelData?.map((v) => (<div>{v.name}</div>))}
                     </MenuScroll>
                 </Channels>
                 <Chats>
                     <Switch>
-                        <Route path='/workspace/channel' component={Channel} />
-                        <Route path='/workspace/dm' component={DirectMessage} />
+                        <Route path='/workspace/:workspace/channels/:channel' component={Channel} />
+                        <Route path='/workspace/:workspace/dm/:id' component={DirectMessage} />
                     </Switch>
                 </Chats>
             </WorkspaceWrapper>
@@ -197,7 +203,7 @@ const Workspace: VFC = () => {
                 </form>
             </Modal>
             <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}
-            // setShowCreateChannelModal={setShowCreateChannelModal} 
+                setShowCreateChannelModal={setShowCreateChannelModal}
             />
         </div >
     )

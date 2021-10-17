@@ -48,7 +48,7 @@ const SignUp: FC = () => {
     }, [email, nickname, password, passwordCheck])
 
     if (data) {
-        return <Redirect to='/workspace/channel' />
+        return <Redirect to="/workspace/bulletin/channel/general" />
     }
 
     return (
