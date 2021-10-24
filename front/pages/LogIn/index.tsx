@@ -38,7 +38,7 @@ const LogIn = () => {
     }
 
     if (data) {
-        return <Redirect to="/workspace/channel/" />
+        return <Redirect to="/workspace/bulletin/channel/general" />
     }
 
 
