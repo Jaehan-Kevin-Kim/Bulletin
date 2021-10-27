@@ -20,13 +20,13 @@ const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChann
     const [newChannel, onChangeNewChannel, setNewChannel] = useInput('')
     const { workspace, channel } = useParams<{ workspace: string, channel: string }>();
 
-    const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+    const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
 
-    const { data: channelData, mutate: mutateChannel } = useSWR<IChannel[]>(userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null, fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+    const { data: channelData, mutate: mutateChannel } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
 
     const onCreateChannel = useCallback((e) => {
         e.preventDefault();
-        axios.post(`http://localhost:3095/api/workspaces/${workspace}/channels`, {
+        axios.post(`/api/workspaces/${workspace}/channels`, {
             name: newChannel,
         }, {
             withCredentials: true,
@@ -44,7 +44,6 @@ const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChann
 
             }
         })
-
     }, [newChannel],
     )
 

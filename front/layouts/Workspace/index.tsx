@@ -15,6 +15,10 @@ import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
 import { toast } from 'react-toastify'
 import CreateChannelModal from '@components/CreateChannelModal';
+import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
+import InviteChannelModal from '@components/InviteChannelModal';
+// import ChannelList from '@components/ChannelList';
+import DMList from '@components/DMLIst';
 
 
 
@@ -24,17 +28,21 @@ const Workspace: VFC = () => {
     const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
     const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
     const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+    const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
+    const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
     const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
     const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
     const { workspace } = useParams<{ workspace: string }>();
 
-    const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
-    const { data: channelData } = useSWR<IChannel[]>(userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null, fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+    const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+    const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
+    const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher
+    )
 
 
     const onLogout = useCallback(() => {
-        axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true })
+        axios.post('/api/users/logout', null, { withCredentials: true })
             .then(() => {
                 mutate();
             });
@@ -64,6 +72,8 @@ const Workspace: VFC = () => {
             console.log('click')
             setShowCreateWorkspaceModal(false);
             setShowCreateChannelModal(false);
+            setShowInviteWorkspaceModal(false);
+            setShowInviteChannelModal(false);
         }, [],
     )
 
@@ -72,7 +82,7 @@ const Workspace: VFC = () => {
             e.preventDefault();
             if (!newWorkspace || !newWorkspace.trim()) return;
             if (!newUrl || !newUrl.trim()) return;
-            axios.post('http://localhost:3095/api/workspaces', {
+            axios.post('/api/workspaces', {
                 workspace: newWorkspace,
                 url: newUrl,
             }, {
@@ -99,8 +109,7 @@ const Workspace: VFC = () => {
 
     const onClickInviteWorkspace = useCallback(() => {
 
-    }, [],
-    )
+    }, [])
 
     //아래 FUNCTION이 작동되면 Channel을 만드는 모달이 뜨게 하기
     const onClickAddChannel = useCallback(() => {
@@ -166,6 +175,8 @@ const Workspace: VFC = () => {
                             </WorkspaceModal>
                         </Menu>
                         {/* {channelData && channelData.map((v) => { (<div>{v.name}</div>) })} */}
+                        {/* <ChannelList /> */}
+                        <DMList />
                         {channelData?.map((v) => (<div>{v.name}</div>))}
                     </MenuScroll>
                 </Channels>
@@ -192,6 +203,8 @@ const Workspace: VFC = () => {
             </Modal>
             <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal} setShowCreateChannelModal={setShowCreateChannelModal}
             />
+            <InviteWorkspaceModal show={showInviteWorkspaceModal} onCloseModal={onCloseModal} setShowInviteWorkspaceModal={setShowInviteWorkspaceModal} />
+            <InviteChannelModal show={showInviteChannelModal} onCloseModal={onCloseModal} setShowInviteChannelModal={setShowInviteChannelModal} />
 
 
         </div>
