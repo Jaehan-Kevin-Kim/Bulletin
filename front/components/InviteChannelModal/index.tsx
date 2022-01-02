@@ -20,6 +20,8 @@ const InviteChannelModal: VFC<Props> = ({ show, onCloseModal, setShowInviteChann
 
     // const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher); //이건 login 후에 내 정보를 가져오는 GET 요청 (API 참고)
 
+    // console.log('channel', channel)
+
     const { data: userData } = useSWR<IUser | false>(`/api/users`, fetcher)
 
     const { mutate: mutateMember } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null, fetcher

@@ -1,25 +1,21 @@
 // import EachDM from '@components/EachDM';
 // import useSocket from '@hooks/useSocket';
-import React, { FC, useCallback, useEffect, useState } from 'react';
-// import { CollapseButton } from '@components/DMList/styles';
-import { CollapseButton } from '@components/DMLIst/styles';
+import React, { FC, useCallback, useEffect, useState, VFC } from 'react';
 import { IDM, IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router';
+import { CollapseButton } from '@components/DMLIst/styles';
 import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
-interface Props {
-    userData?: IUser
-}
 
-const DMList: FC<Props> = ({ userData }) => {
+const DMList: VFC = () => {
     const { workspace } = useParams<{ workspace?: string }>();
-    // const { data: userData } = useSWR<IUser>('/api/users', fetcher,
-    //     //   {
-    //     //     dedupingInterval: 2000, // 2초
-    //     //   }
-    // );
+    const { data: userData, error, mutate } = useSWR<IUser>('/api/users', fetcher,
+        // {
+        //     dedupingInterval: 2000, // 2초
+        // }
+    );
     const { data: memberData } = useSWR<IUserWithOnline[]>(
         userData ? `/api/workspaces/${workspace}/members` : null,
         fetcher,
