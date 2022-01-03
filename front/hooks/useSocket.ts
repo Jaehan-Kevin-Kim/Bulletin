@@ -7,6 +7,8 @@ const backUrl = 'http://localhost:3095'
 
 const sockets: {} = {};
 const useSocket = (workspace?: string) => {
+    console.log('rerender bulletine');
+
 
     const disconnect = useCallback(() => {
         if (workspace) {
@@ -20,8 +22,10 @@ const useSocket = (workspace?: string) => {
         return [undefined, disconnect];
     }
 
-    sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`);
-    // 위처럼 만 하면 socket.io 사용 준비가 완료 됨.
+    if (!sockets[workspace]) {
+        sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`, { transports: ['websocket'] });
+        // 위처럼 만 하면 socket.io 사용 준비가 완료 됨.
+    }
 
 
 
