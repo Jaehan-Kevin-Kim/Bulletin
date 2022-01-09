@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-// import { MentionsInput } from 'react-mentions';
-
+import { MentionsInput } from 'react-mentions';
 
 export const ChatArea = styled.div`
   display: flex;
@@ -18,7 +17,8 @@ export const Form = styled.form`
 `;
 
 // export const MentionsTextarea = styled(MentionsInput)`
-export const MentionsTextarea = styled.textarea`
+// export const MentionsTextarea = styled.textarea`
+export const MentionsTextarea = styled(MentionsInput)`
   font-family: Slack-Lato, appleLogo, sans-serif;
   font-size: 15px;
   padding: 8px 9px;
